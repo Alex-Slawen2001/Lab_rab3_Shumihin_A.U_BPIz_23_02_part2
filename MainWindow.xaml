@@ -1,0 +1,103 @@
+<!--
+    Файл: MainWindow.xaml
+    Назначение: Главное окно. DataContext = MainViewModel (задаётся в code-behind).
+                Команды (…Command) и свойства сгенерированы CommunityToolkit.Mvvm
+                из методов [RelayCommand] и полей [ObservableProperty].
+-->
+<Window x:Class="Lab_rab3_Shumihin_A_U_BPIz_23_02_part_2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Сравнение сортировок (многопоточность, Task)" Height="600" Width="820"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Размер массива и кнопка генерации -->
+        <Label Grid.Row="0" Grid.Column="0" Content="Размер массива:" Margin="3"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="3" VerticalContentAlignment="Center"
+                 Text="{Binding ArraySize, UpdateSourceTrigger=PropertyChanged}"
+                 IsEnabled="{Binding IsIdle}"/>
+        <Button Grid.Row="0" Grid.Column="2" Content="Сгенерировать" Margin="3" Padding="10,2"
+                Command="{Binding GenerateArrayCommand}"/>
+
+        <!-- Отображение исходного массива -->
+        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="3" TextWrapping="Wrap"
+                   Text="{Binding OriginalArrayString}"/>
+
+        <!-- Сортировки: кнопка запуска, индикатор прогресса, результат -->
+        <GroupBox Grid.Row="2" Grid.ColumnSpan="3" Header="Сортировки (каждая — в отдельной задаче Task, async/await)" Margin="3">
+            <Grid Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Row="0" Grid.Column="0" Content="Пузырьковая" Width="120" Margin="3"
+                        Command="{Binding BubbleSortCommand}"/>
+                <ProgressBar Grid.Row="0" Grid.Column="1" Height="16" Margin="3" Maximum="100"
+                             Value="{Binding BubbleProgress, Mode=OneWay}"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Margin="3" TextWrapping="Wrap" VerticalAlignment="Center"
+                           Text="{Binding BubbleSortResult}"/>
+
+                <Button Grid.Row="1" Grid.Column="0" Content="Быстрая" Width="120" Margin="3"
+                        Command="{Binding QuickSortCommand}"/>
+                <ProgressBar Grid.Row="1" Grid.Column="1" Height="16" Margin="3" Maximum="100"
+                             Value="{Binding QuickProgress, Mode=OneWay}"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" Margin="3" TextWrapping="Wrap" VerticalAlignment="Center"
+                           Text="{Binding QuickSortResult}"/>
+
+                <Button Grid.Row="2" Grid.Column="0" Content="Вставками" Width="120" Margin="3"
+                        Command="{Binding InsertionSortCommand}"/>
+                <ProgressBar Grid.Row="2" Grid.Column="1" Height="16" Margin="3" Maximum="100"
+                             Value="{Binding InsertionProgress, Mode=OneWay}"/>
+                <TextBlock Grid.Row="2" Grid.Column="2" Margin="3" TextWrapping="Wrap" VerticalAlignment="Center"
+                           Text="{Binding InsertionSortResult}"/>
+
+                <Button Grid.Row="3" Grid.Column="0" Content="Пирамидальная" Width="120" Margin="3"
+                        Command="{Binding HeapSortCommand}"/>
+                <ProgressBar Grid.Row="3" Grid.Column="1" Height="16" Margin="3" Maximum="100"
+                             Value="{Binding HeapProgress, Mode=OneWay}"/>
+                <TextBlock Grid.Row="3" Grid.Column="2" Margin="3" TextWrapping="Wrap" VerticalAlignment="Center"
+                           Text="{Binding HeapSortResult}"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Задание 4: одновременный и последовательный запуск, журнал замеров -->
+        <GroupBox Grid.Row="3" Grid.ColumnSpan="3" Header="Сравнение: одновременный и последовательный запуск" Margin="3">
+            <StackPanel Margin="3">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Все одновременно" Margin="3" Padding="10,2"
+                            Command="{Binding RunAllParallelCommand}"/>
+                    <Button Content="Все последовательно" Margin="3" Padding="10,2"
+                            Command="{Binding RunAllSequentialCommand}"/>
+                    <!-- Задание 2: отмена всех выполняющихся задач -->
+                    <Button Content="Отменить всё" Margin="20,3,3,3" Padding="10,2"
+                            Command="{Binding CancelAllCommand}"/>
+                </StackPanel>
+                <ListBox Height="90" Margin="3" ItemsSource="{Binding MeasurementLog}"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Общее число сравнений -->
+        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="3" FontWeight="Bold"
+                   Text="{Binding TotalComparisons}"/>
+    </Grid>
+</Window>
